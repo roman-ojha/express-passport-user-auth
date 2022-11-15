@@ -62,7 +62,7 @@ app.use(
 
     cookie: {
       // so here we are setting a expire date of cookie
-      maxAge: 1000 * 60 * 60 * 24, // 1 [day
+      maxAge: 1000 * 60 * 60 * 24, // 1 days
     },
   })
 );
@@ -81,8 +81,36 @@ app.get("/", (req, res, next) => {
 
   /*
    *) After storing the session on browser and on the database
+        -> so after storing the session on browser it will attach that sessionId on ever request
+        -> it will going to take the value of that sessionId, and will going to search for that sessionId to the session store
+        -> and if the session valid then we can get the information from the session ether to authenticate a user, or to get some data about the user
+        -> so when ever server get the session id from client it will check to the session database it will grab that session document and it will going to get the information that we have set on to that session
    */
-  res.send("Hello world");
+
+  /*
+        -> so, for these tutorial we will use this session for the use authentication using passport js
+    */
+  // now even we can get the information about the session
+  console.log(req.session);
+
+  // logic to see the number of time same client user request the server
+
+  let viewCount = (req.session as any).viewCount;
+  // so here for the first time viewCount will be undefined
+  // after that we will set the viewCount and increment it
+  // and NOTE that this 'viewCount' will get store to the session
+
+  if (viewCount) {
+    // so here we are incrementing every time client will visit to our site
+    console.log(viewCount);
+    viewCount = viewCount + 1;
+    (req.session as any).viewCount = viewCount;
+  } else {
+    (req.session as any).viewCount = 1;
+  }
+  // viewCount is the number of time that user visit the site
+
+  res.send(`You have visited this page: ${viewCount} times`);
 });
 
 app.listen(8080, () => {

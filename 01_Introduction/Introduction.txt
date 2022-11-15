@@ -1,0 +1,34 @@
+*) Node + Passport.js User Authentication
+
+*) User authentication Choices
+    1. Session
+        -> passport-local strategy
+    2. JSON Web Tokens
+        -> passport-jwt strategy 
+    3. OAuth
+        -> Provide by Ex: Google, Youtube, Github to give access to there api's
+        -> OAuth is a protocol
+        a. In-House
+        b. SaaS
+    4. Other / Ad-Hoc
+        -> 
+
+*) Authentication vs Authorization
+    *) Authentication
+        -> Session & JWT are Authentication which is about knowing who the user is that is called as authentication
+    *) Authorization
+        -> Ex: Sign in with google, sign in with github 
+        -> It is about who have access to what resources and request
+        -> we provide access token which have certain scope or permission to some resources
+
+*) What is Passport JS?
+    -> It is a framework that is a middleware that use a peace of strategy
+    -> where in every http request the passport framework will first pick up what strategy we are using and it will use that strategy and check for authentication
+    *) Welcome to express middleware
+        -> On each HTTP request, Passport will use a "Strategy" to determine where the requestor has permission to view that resources
+        -> If the user does not have permission, a 401 Unauthorized Error is thrown
+    *) Passport Strategies??
+        -> Each strategy uses the Passport JS framework as a template
+        -> The Passport local Strategy utilizes Cookies, Express Session and some authentication logic
+    *) Passport Strategies:
+        -> https://www.passportjs.org/packages/

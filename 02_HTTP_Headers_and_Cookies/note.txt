@@ -1,0 +1,23 @@
+*) Headers:
+    -> https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#:~:text=HTTP%20headers%20let%20the%20client,before%20the%20value%20is%20ignored.
+    -> Metadata about the http request requested by the client
+    -> and Metadata about the http response that send by the server
+    -> header contain the type of data that client want from the server
+    -> contain the Methods
+    -> response Status code
+    -> contain the Cookie
+    1. General Headers
+    2. Response Headers
+    3. Request Headers
+    etc ....
+
+*) Cookie:
+    -> Small peace of information that improve user Experience
+    -> when server response with 'set-cookie' header it will set some cookie to the browser
+    -> after that ever request that we make with in the same domain It will attached those cookie which are set base on 'set-cookie' http header
+    -> so, after cookies had been set, when we again request then it will set these 'cookies' on the request headers
+    -> so when we will request to the server asking web page it will response with 'set-cookie' header Ex:
+        => set-cookie: 1P_JAR=2022-11-15-12; expires=Thu, 15-Dec-2022 12:51:03 GMT; path=/; domain=.google.com; Secure; SameSite=none
+    -> now after browser get the response it will store these cookies
+    -> after that when we again request to the same domain server browser will send these cookies on 'cookies' header
+    -> also while responding by the server passing 'set-cookie' as header it also contain the 'expires' data to expires that cookies and no longer store by the browser

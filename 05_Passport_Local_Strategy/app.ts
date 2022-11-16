@@ -51,7 +51,15 @@ app.use(
  */
 // https://www.passportjs.org/packages/passport-local/
 // https://www.passportjs.org/howtos/password/
+
+// including the implementation of passport js authentication
+import "./config/passport";
+
+// to initialized the passport middleware every time we load the route
 app.use(passport.initialize());
+// we are also using the passport session
+// where we just implemented the 'passport.serializerUser' & 'passport.deserializerUser' function on './config/passport.ts'
+// also it is connected to the express-session middleware
 app.use(passport.session());
 
 /**

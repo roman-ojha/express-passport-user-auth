@@ -1,16 +1,16 @@
 import passport from "passport";
 const LocalStrategy = require("passport-local").Strategy;
 import connection from "./database";
-import { validPassword } from "../lib/passwordUtils";
+import { validatePassword } from "../lib/passwordUtils";
 const User = connection.models.User;
 
 // Firstly we need to do is to define verified callback for the passport local strategy
 
 // creating the custom field to define on passport to look into
-const customField = {
+const customFields = {
   // <passport_verify_callback_params_name>: "<user_requested_body_params>"
-  username: "username",
-  password: "password",
+  username: "uname",
+  password: "pw",
 };
 
 // Documenting:
@@ -18,7 +18,7 @@ const verifyCallBack = (username: string, password: string, doneCb) => {
   // 'doneCb' is the callback function that we will pass authentication result
   // 'username' & 'password' are the parameter that we get from user request body
   // by default 'username' & 'password' are the field that passport js local strategy gives un as parameter
-  // but we can define custom field 'customField' that we want passport to look into
+  // but we can define custom field 'customFields' that we want passport to look into
   //
   // Now bello is our implementation of authenticating the user
   // first we will find the 'username' on database
@@ -33,7 +33,7 @@ const verifyCallBack = (username: string, password: string, doneCb) => {
       // if User exist:
       //  we will try to validate the password that user send us
       // validPassword(<user_password>,<user_hash_from_the_database>,<user_salt_from_the_database>)
-      const isValid = validPassword(password, user.hash, user.salt);
+      const isValid = validatePassword(password, user.hash, user.salt);
 
       if (isValid) {
         // if the login credential are valid then we will authorized the user
@@ -52,7 +52,7 @@ const verifyCallBack = (username: string, password: string, doneCb) => {
 // const strategy = new LocalStrategy(verifyCallBack);
 
 // creating LocalStrategy with custom field
-const strategy = new LocalStrategy(customField, verifyCallBack);
+const strategy = new LocalStrategy(customFields, verifyCallBack);
 
 // now we can use new strategy that we created on passport js
 passport.use(strategy);
@@ -66,3 +66,19 @@ passport.use(strategy);
 //       .catch(() => {});
 //   })
 // );
+
+// Bellow code has to be done for the express sessions
+// about how we put user into the session and take it out of the session
+passport.serializeUser((user: any, done) => {
+  // so here we will put user of into the session
+  done(null, user.id);
+});
+
+passport.deserializeUser((userId, done) => {
+  // when user want to come out of the session we will grab that userId that we store into the session and find into the database
+  User.findById(userId)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => done(err));
+});

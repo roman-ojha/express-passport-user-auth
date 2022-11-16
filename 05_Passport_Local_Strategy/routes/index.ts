@@ -1,19 +1,49 @@
-const router = require("express").Router();
+import express from "express";
+import { User } from "../config/database";
 import passport from "passport";
-const passwordUtils = require("../lib/passwordUtils");
+import { genPassword } from "../lib/passwordUtils";
 const connection = require("../config/database");
-// import { User } from "../config/database";
+
+const router = express.Router();
 
 /**
  * -------------- POST ROUTES ----------------
  */
 
 // now after implementing passport local strategy we can use that middleware
-// passport.authenticate('<type_of_strategy>');
-router.post("/login", passport.authenticate("local"), (req, res, next) => {});
+// passport.authenticate('<type_of_strategy>',{<object_to_tell_where_to_redirect_on_status>});
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    // where to redirect on user login on what status
+    failureRedirect: "/login-failure",
+    successRedirect: "/login-success",
+  }),
+  (req, res, next) => {}
+);
 
-// TODO
-router.post("/register", (req, res, next) => {});
+router.post("/register", (req, res, next) => {
+  // getting password from request body
+  const saltHash = genPassword(req.body.pw);
+  // note what ever the value that we put on the 'customFields' that's the way that we have to get on req.body
+
+  const salt = saltHash.salt;
+  const hash = saltHash.hash;
+
+  // creating new user
+  const newUser = new User({
+    username: req.body.uname,
+    hash: hash,
+    salt: salt,
+  });
+
+  // saving user to database
+  newUser.save().then((user) => {
+    console.log(user);
+  });
+
+  res.redirect("/login");
+});
 
 /**
  * -------------- GET ROUTES ----------------
@@ -38,8 +68,8 @@ router.get("/login", (req, res, next) => {
 router.get("/register", (req, res, next) => {
   const form =
     '<h1>Register Page</h1><form method="post" action="register">\
-                    Enter Username:<br><input type="text" name="username">\
-                    <br>Enter Password:<br><input type="password" name="password">\
+                    Enter Username:<br><input type="text" name="uname">\
+                    <br>Enter Password:<br><input type="password" name="pw">\
                     <br><br><input type="submit" value="Submit"></form>';
 
   res.send(form);
@@ -53,6 +83,9 @@ router.get("/register", (req, res, next) => {
  */
 router.get("/protected-route", (req, res, next) => {
   // This is how you check if a user is authenticated and protect a route.  You could turn this into a custom middleware to make it less redundant
+  console.log(req.isAuthenticated());
+  console.log(req.sessionID);
+  console.log(req.session);
   if (req.isAuthenticated()) {
     res.send(
       '<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>'
@@ -66,7 +99,11 @@ router.get("/protected-route", (req, res, next) => {
 
 // Visiting this route logs the user out
 router.get("/logout", (req, res, next) => {
-  req.logout();
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+  });
   res.redirect("/protected-route");
 });
 

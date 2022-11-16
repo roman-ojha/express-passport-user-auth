@@ -13,7 +13,7 @@ require("dotenv").config();
  * DB_STRING=mongodb://<user>:<password>@localhost:27017/database_name
  */
 
-const db = "mongodb://localhost:27017/passport-user-auth-tut";
+const db = process.env.DATABASE;
 
 const connection: void & mongoose.Connection = (
   mongoose as any
@@ -32,4 +32,5 @@ const UserSchema = new mongoose.Schema({
 const User = connection.model("User", UserSchema);
 
 // Expose the connection
-module.exports = connection;
+export default connection;
+export { User };

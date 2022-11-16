@@ -2,14 +2,15 @@ const router = require("express").Router();
 import passport from "passport";
 const passwordUtils = require("../lib/passwordUtils");
 const connection = require("../config/database");
-const User = connection.models.User;
+// import { User } from "../config/database";
 
 /**
  * -------------- POST ROUTES ----------------
  */
 
-// TODO
-router.post("/login", (req, res, next) => {});
+// now after implementing passport local strategy we can use that middleware
+// passport.authenticate('<type_of_strategy>');
+router.post("/login", passport.authenticate("local"), (req, res, next) => {});
 
 // TODO
 router.post("/register", (req, res, next) => {});

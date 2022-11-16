@@ -5,8 +5,7 @@ var passport = require("passport");
 var cy = require("crypto");
 var routes = require("./routes");
 const connection = require("./config/database");
-
-// Package documentation - https://www.npmjs.com/package/connect-mongo
+const MongoStore = require("connect-mongo");
 // const MongoStore = require("connect-mongo")(session);
 
 // Need to require the entire Passport config module so app.js knows about it
@@ -29,12 +28,29 @@ app.use(express.urlencoded({ extended: true }));
  * -------------- SESSION SETUP ----------------
  */
 
-// TODO
+const sessionStore = MongoStore.create({
+  mongoUrl: "mongodb://localhost:27017/passport-user-auth-tut",
+  collectionName: "sessions",
+});
+
+// creating session middleware
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+    },
+  })
+);
 
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
-
+// https://www.passportjs.org/packages/passport-local/
+// https://www.passportjs.org/howtos/password/
 app.use(passport.initialize());
 app.use(passport.session());
 

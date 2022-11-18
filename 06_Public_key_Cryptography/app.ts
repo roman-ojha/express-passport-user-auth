@@ -34,35 +34,23 @@
         -> but using public key we can't get the private key
 */
 
-const crypto = require("crypto");
+import genKeyPair from "./cryptography";
+import { encryptWithPublicKey } from "./encrypt";
+import { decryptWithPrivateKey } from "./decrypt";
 import fs from "fs";
 
-// Function to generate 'public' and 'private' key using the Elliptic curve cryptography under the hood
-function genKeyPair() {
-  // Generate an object where the keys are stored in properties 'publicKey' and 'privateKey'
-  const keyPair = crypto.generateKeyPairSync("rsa", {
-    // using RSA algorithm
-    modulusLength: 4096, // bits - standard for RSA keys
-    publicKeyEncoding: {
-      type: "pkcs1", // Public key crypto standards 1
-      format: "pem", // Most common formatting choice
-    },
-    privateKeyEncoding: {
-      type: "pkcs1", // Public key crypto standards 1
-      format: "pem", // Most common formatting choice
-    },
-  });
+// 1. Encrypting and Decrypting Data:
 
-  const privateKey = keyPair.privateKey;
-  const publicKey = keyPair.publicKey;
-  console.log(publicKey);
-  console.log(privateKey);
+// Encrypting Data with public key:
+// reading public key from the .pem file
+const publicKey = fs.readFileSync(__dirname + "/id_rsa_pub.pem", "utf8");
 
-  // Storing the public key file
-  fs.writeFileSync(__dirname + "/id_rsa_pub.pem", keyPair.publicKey);
+// Getting encrypted Buffer message object
+const encryptedMessage = encryptWithPublicKey(publicKey, "My name is Roman");
+console.log(encryptedMessage.toString());
 
-  // Storing the Private key file
-  fs.writeFileSync(__dirname + "/id_rsa_priv.pem", privateKey);
-}
-
-genKeyPair();
+// Decrypting Data with private Key
+const privateKey = fs.readFileSync(__dirname + "/id_rsa_priv.pem", "utf8");
+// Getting Original Message from Encrypted Buffer message
+const decryptedMessage = decryptWithPrivateKey(privateKey, encryptedMessage);
+console.log(decryptedMessage.toString());

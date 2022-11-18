@@ -39,8 +39,10 @@ import { encryptWithPublicKey } from "./encrypt";
 import { decryptWithPrivateKey } from "./decrypt";
 import fs from "fs";
 
-// 1. Encrypting and Decrypting Data:
+// Generating public and private Key
+genKeyPair();
 
+// 1. Encrypting and Decrypting Data:
 // Encrypting Data with public key:
 // reading public key from the .pem file
 const publicKey = fs.readFileSync(__dirname + "/id_rsa_pub.pem", "utf8");
@@ -54,3 +56,9 @@ const privateKey = fs.readFileSync(__dirname + "/id_rsa_priv.pem", "utf8");
 // Getting Original Message from Encrypted Buffer message
 const decryptedMessage = decryptWithPrivateKey(privateKey, encryptedMessage);
 console.log(decryptedMessage.toString());
+
+// 2. Encrypting and Decrypting Digital Signature
+// here we will use data and signature on that data so that the other person can authenticate the signature and verify the data
+import "./verifyIdentity";
+// Here the example that we did on 'verifyIdentity' is the same exact process is used to Json Web Token(JWT)
+// we can see the same example here as well : https://jwt.io/

@@ -8,4 +8,11 @@ function encryptWithPublicKey(publicKey: string, message: string) {
   return crypto.publicEncrypt(publicKey, bufferMessage);
 }
 
-export { encryptWithPublicKey };
+// 2. Encrypting Digital Signature or Identities
+// Function to encrypt the message using Private key
+function encryptWithPrivateKey(privateKey: string, message) {
+  const bufferMessage = Buffer.from(message, "utf8");
+  return crypto.privateEncrypt(privateKey, message);
+}
+
+export { encryptWithPublicKey, encryptWithPrivateKey };

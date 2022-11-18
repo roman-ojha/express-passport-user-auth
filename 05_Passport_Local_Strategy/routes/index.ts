@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { User } from "../config/database";
 import passport from "passport";
 import { genPassword } from "../lib/passwordUtils";
@@ -15,6 +15,7 @@ const router = express.Router();
 router.post(
   "/login",
   passport.authenticate("local", {
+    // 'passport.authenticate' function will authenticate the user based on session that had been create
     // where to redirect on user login on what status
     failureRedirect: "/login-failure",
     successRedirect: "/login-success",
@@ -35,6 +36,7 @@ router.post("/register", (req, res, next) => {
     username: req.body.uname,
     hash: hash,
     salt: salt,
+    admin: false,
   });
 
   // saving user to database
@@ -81,25 +83,55 @@ router.get("/register", (req, res, next) => {
  *
  * Also, look up what behaviour express session has without a maxage set
  */
-router.get("/protected-route", (req, res, next) => {
+
+// Writing the auth Middleware to check does the user is authenticated or not
+const isAuth = (req: Request, res: Response, next: NextFunction) => {
+  if ((req as any).isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).json({ msg: "You are not authorized" });
+  }
+};
+
+// Write Auth Middleware to check does the request user is Admin or not
+const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if ((req as any).isAuthenticated() && (req as any).user.admin) {
+    next();
+  } else {
+    res.status(401).json({ msg: "You are not admin" });
+  }
+};
+
+router.get("/protected-route", isAuth, (req, res, next) => {
   // This is how you check if a user is authenticated and protect a route.  You could turn this into a custom middleware to make it less redundant
   console.log(req.isAuthenticated());
+  // this 'req.isAuthenticated()' function will check does 'passport.user' property exist on the session or not
   console.log(req.sessionID);
   console.log(req.session);
-  if (req.isAuthenticated()) {
-    res.send(
-      '<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>'
-    );
-  } else {
-    res.send(
-      '<h1>You are not authenticated</h1><p><a href="/login">Login</a></p>'
-    );
-  }
+
+  // Without using middleware we had done these things
+  // if (req.isAuthenticated()) {
+  //   res.send(
+  //     '<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>'
+  //   );
+  // } else {
+  //   res.send(
+  //     '<h1>You are not authenticated</h1><p><a href="/login">Login</a></p>'
+  //   );
+  // }
+
+  res.send("You make it to the route.");
+});
+
+// router to use amin middleware
+router.get("/admin", isAdmin, (req, res, next) => {
+  res.send("You are Admin");
 });
 
 // Visiting this route logs the user out
 router.get("/logout", (req, res, next) => {
   req.logout(function (err) {
+    // 'req.logout' will delete the 'passport.user' property from session
     if (err) {
       return next(err);
     }
@@ -117,4 +149,4 @@ router.get("/login-failure", (req, res, next) => {
   res.send("You entered the wrong password.");
 });
 
-module.exports = router;
+export default router;

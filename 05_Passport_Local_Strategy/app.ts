@@ -1,11 +1,11 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const session = require("express-session");
-var passport = require("passport");
-var cy = require("crypto");
-var routes = require("./routes");
-const connection = require("./config/database");
-const MongoStore = require("connect-mongo");
+import express from "express";
+import mongoose from "mongoose";
+import session from "express-session";
+import passport from "passport";
+import crypto from "crypto";
+import routes from "./routes/index";
+import connection from "./config/database";
+import MongoStore from "connect-mongo";
 // const MongoStore = require("connect-mongo")(session);
 
 // Need to require the entire Passport config module so app.js knows about it
@@ -36,7 +36,7 @@ const sessionStore = MongoStore.create({
 // creating session middleware
 app.use(
   session({
-    secret: process.env.SECRET,
+    secret: process.env.SECRET as string,
     resave: false,
     saveUninitialized: true,
     store: sessionStore,
@@ -61,6 +61,23 @@ app.use(passport.initialize());
 // where we just implemented the 'passport.serializerUser' & 'passport.deserializerUser' function on './config/passport.ts'
 // also it is connected to the express-session middleware
 app.use(passport.session());
+// passport.session will also check is the requesting user is logged in or is the requesting user exist on the session or not
+
+// Understanding passport middleware's
+app.use((req, res, next) => {
+  // express session will create this session object
+  console.log(req.session);
+  // passport will insert the new property 'passport' inside the session
+  // passport: { user: '637496a49cdd251ddff8548c' }
+  // this happen because of the 'passport.serialize'
+  // where we pass the 'user.id'
+
+  // and the passport middleware will create user object
+  console.log(req.user);
+  // for 'req.user' object we deserialize the user where we wrote the function 'passport.deserialize()' where we grab the data from the database based on the userId that we get from the 'session.passport.user'
+
+  next();
+});
 
 /**
  * -------------- ROUTES ----------------

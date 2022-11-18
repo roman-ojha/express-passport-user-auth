@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon 05_Passport_Local_Strategy/app.ts"
+    "dev": "nodemon 06_Public_key_Cryptography/app.ts"
   },
   "repository": {
     "type": "git",

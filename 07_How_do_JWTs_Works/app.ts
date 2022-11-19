@@ -32,4 +32,6 @@
             3. Signature
 */
 
-import "./issuedJTWExample";
+// import "./issuedJTWExample";
+
+import "./issuedJWT";

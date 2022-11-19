@@ -32,6 +32,11 @@
             3. Signature
 */
 
+// Issued JWT Example:
 // import "./issuedJTWExample";
 
-import "./issuedJWT";
+// Issued JWT and Verify JWT on our own Example:
+// import "./issuedJWT";
+
+// Issued JWT and Verify JWT using 'jsonwebtoken' Example
+import "./jsonwebtoken";

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon 06_Public_key_Cryptography/app.ts"
+    "dev": "nodemon 07_How_do_JWTs_Works/app.ts"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/roman-ojha/express-passport-user-auth#readme",
   "dependencies": {
     "@types/express-session": "^1.17.5",
+    "base64url": "^3.0.1",
     "connect-mongo": "^4.6.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

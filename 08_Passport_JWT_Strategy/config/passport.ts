@@ -1,5 +1,6 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import passport from "passport";
 const User = require("mongoose").model("User");
 
 const pathToKey = path.join(__dirname, "..", "id_rsa_pub.pem");
@@ -9,4 +10,5 @@ const PUB_KEY = fs.readFileSync(pathToKey, "utf8");
 const options = {};
 
 // TODO
-module.exports = (passport) => {};
+type typePassport = typeof passport;
+module.exports = (passport: typePassport) => {};

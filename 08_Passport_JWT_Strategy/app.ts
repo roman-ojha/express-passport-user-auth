@@ -10,6 +10,8 @@ import passport from "passport";
  * -------------- GENERAL SETUP ----------------
  */
 
+// import "./generateKeypair";
+
 // Gives us access to variables set in the .env file via `process.env.VARIABLE_NAME` syntax
 require("dotenv").config();
 
@@ -52,4 +54,6 @@ app.use(require("./routes"));
  */
 
 // Server listens on http://localhost:3000
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Server started");
+});

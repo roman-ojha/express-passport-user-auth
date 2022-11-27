@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon 07_How_do_JWTs_Works/app.ts"
+    "dev": "nodemon 08_Passport_JWT_Strategy/app.ts"
   },
   "repository": {
     "type": "git",

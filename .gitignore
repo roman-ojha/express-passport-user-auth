@@ -1,2 +1,5 @@
 .env
 node_modules/
+
+# NOTE: on real project you can add private key on git
+# id_rsa_priv.pem

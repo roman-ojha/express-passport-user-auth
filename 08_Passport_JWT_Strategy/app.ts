@@ -5,6 +5,10 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import passport from "passport";
+// const express = require('express');
+// const cors = require('cors');
+// const path = require('path');
+// const passport = require("passport");
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -47,13 +51,17 @@ app.use(express.static(path.join(__dirname, "public")));
  */
 
 // Imports all of the routes from ./routes/index.js
+app.get('/',(req,res)=>{
+  res.send("hello world");
+})
 app.use(require("./routes"));
+
 
 /**
  * -------------- SERVER ----------------
  */
 
 // Server listens on http://localhost:3000
-app.listen(3000, () => {
-  console.log("Server started");
+app.listen(8080, () => {
+  console.log(`Started on http://locahost:${8080}`);
 });

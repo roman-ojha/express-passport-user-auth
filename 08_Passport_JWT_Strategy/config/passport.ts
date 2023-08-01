@@ -63,6 +63,7 @@ const verifyCallback = (payload, done: Function) => {
       if (user) {
         // now because user is already verified and also we found the user in the database we will now return that user into done callback so that it can attached it into 'request' object
         return done(null, user);
+        // now after verifying the user passport will attach the user data into request.user
       } else {
         return done(null, false);
       }
